@@ -1,0 +1,21 @@
+{
+  "bracketSpacing": true,
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "tabWidth": 2,
+  "useTabs": false,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": [
+        "tsconfig.json",
+        "tsconfig.*.json"
+      ],
+      "options": {
+        "singleQuote": false,
+        "trailingComma": "es5"
+      }
+    }
+  ]
+}
