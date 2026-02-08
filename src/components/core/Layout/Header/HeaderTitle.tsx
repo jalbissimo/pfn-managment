@@ -3,21 +3,29 @@ import Image from 'next/image';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+const PFN_GRADIENT =
+  'linear-gradient(180deg,rgba(80, 208, 224, 1) 0%, rgba(48, 128, 176, 1) 42%, rgba(224, 144, 16, 0.96) 82%)';
+
 const classes = {
   title: {
-    color: 'secondary.main',
+    color: 'transparent',
     userSelect: 'none',
     fontWeight: 'bold',
     fontSize: '1rem',
     display: 'flex',
     alignItems: 'center',
     lineHeight: '35px',
-    pl: 2
+    pl: 2,
+    backgroundImage: PFN_GRADIENT,
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+
+    WebkitTextFillColor: 'transparent'
   },
   logoContainer: {
     display: 'flex',
     minWidth: '200px',
- 
+
     '&:hover': {
       cursor: 'pointer'
     }

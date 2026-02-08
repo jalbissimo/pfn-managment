@@ -1,7 +1,9 @@
+import SignInMessage from '@components/core/SignInMessage';
+
 export default function Home() {
   return (
     <div>
-      <main> Hello there</main>
+      <SignInMessage />
     </div>
   );
 }
