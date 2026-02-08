@@ -2,13 +2,25 @@
 
 import React from 'react';
 import ThorTable from '@components/core/ThorTable/ThorTable';
-import { defaultOptions } from '@components/core/ThorTable';
+import { defaultOptions, required } from '@components/core/ThorTable';
 import { formatDateTime } from '@utils/date';
 import { SiteRow } from '@lib/db/appDb';
 
 const columns = [
-  { title: 'Nume șantier', field: 'name', sorting: true, align: 'left' },
-  { title: 'Adresă șantier', field: 'address', sorting: false, align: 'left' },
+  {
+    title: 'Nume șantier',
+    field: 'name',
+    sorting: true,
+    align: 'left',
+    validate: (dataRow) => required(dataRow.name) || true
+  },
+  {
+    title: 'Adresă șantier',
+    field: 'address',
+    sorting: false,
+    align: 'left',
+    validate: (dataRow) => required(dataRow.address) || true
+  },
   {
     title: 'Ultima actualizare',
     field: 'updatedAt',
@@ -26,9 +38,10 @@ type SitesTableProps = {
     onRowDelete?: (oldData: SiteRow) => Promise<void>;
   };
   isLoading: boolean;
+  tableRef: any;
 };
 
-export default function SitesTable({ sites, editable, isLoading }: SitesTableProps) {
+export default function SitesTable({ sites, editable, isLoading, tableRef }: SitesTableProps) {
   const customOptions = {
     ...defaultOptions,
     toolbar: false
@@ -41,6 +54,7 @@ export default function SitesTable({ sites, editable, isLoading }: SitesTablePro
       options={customOptions}
       editable={editable as any}
       isLoading={isLoading}
+      tableRef={tableRef}
     />
   );
 }

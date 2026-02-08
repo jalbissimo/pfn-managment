@@ -8,3 +8,4 @@ export {
   uppercase,
   firstLetterUppercase
 } from './thor-table-validations';
+export { triggerMaterialTableAddRow } from './thorTableHelper';

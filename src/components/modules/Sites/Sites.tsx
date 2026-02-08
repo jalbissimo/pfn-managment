@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Box } from '@mui/material';
 import SitesTable from '@components/modules/Sites/SitesTable';
 import { useSites } from '@hooks/db/sites/useSites';
@@ -10,9 +10,12 @@ import { deleteSiteLocal, upsertSiteLocal } from '@lib/db/sitesRepo';
 import { syncSites } from '@lib/sync/sitesSync';
 import ActionHeader from '@components/core/ActionHeader';
 import SyncIcon from '@mui/icons-material/Sync';
+import AddIcon from '@mui/icons-material/Add';
+import { triggerMaterialTableAddRow } from '@components/core/ThorTable';
 
 export default function Sites() {
-  const { data: sites, isLoading } = useSites() ?? [];
+  const { data: sites = [], isLoading } = useSites() ?? {};
+  const tableRef = useRef<any>(null);
 
   useEffect(() => {
     syncSites().catch(() => {});
@@ -62,6 +65,12 @@ export default function Sites() {
 
   const headerActions = [
     {
+      title: 'Adaugă Șantier',
+      onClick: () => triggerMaterialTableAddRow(tableRef),
+      startIcon: <AddIcon />,
+      variant: 'outlined'
+    },
+    {
       title: 'Sincronizează Acum',
       onClick: handleSync,
       startIcon: <SyncIcon />,
@@ -72,7 +81,7 @@ export default function Sites() {
   return (
     <Box sx={{ p: 2 }}>
       <ActionHeader title="Șantiere" actions={headerActions} />
-      <SitesTable sites={sites} editable={editable} isLoading={isLoading} />
+      <SitesTable sites={sites} editable={editable} isLoading={isLoading} tableRef={tableRef} />
     </Box>
   );
 }
