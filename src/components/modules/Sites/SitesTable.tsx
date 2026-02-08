@@ -12,14 +12,14 @@ const columns = [
     field: 'name',
     sorting: true,
     align: 'left',
-    validate: (dataRow) => required(dataRow.name) || true
+    validate: (dataRow: any) => required(dataRow.name) || true
   },
   {
     title: 'Adresă șantier',
     field: 'address',
     sorting: false,
     align: 'left',
-    validate: (dataRow) => required(dataRow.address) || true
+    validate: (dataRow: any) => required(dataRow.address) || true
   },
   {
     title: 'Ultima actualizare',
