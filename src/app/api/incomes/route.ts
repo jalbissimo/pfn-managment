@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function GET(req: Request) {
@@ -7,8 +6,8 @@ export async function GET(req: Request) {
   const includeDeleted = searchParams.get('includeDeleted') === '1';
 
   let q = supabaseAdmin
-    .from('sites')
-    .select('id,name,address,updated_at,deleted')
+    .from('income_entries')
+    .select('id,site_id,entry_date,description,amount,updated_at,deleted')
     .order('updated_at', { ascending: true });
 
   if (!includeDeleted) q = q.eq('deleted', false);
@@ -16,8 +15,7 @@ export async function GET(req: Request) {
 
   const { data, error } = await q;
   if (error) return Response.json({ error: error.message }, { status: 500 });
-
-  return NextResponse.json({ data });
+  return Response.json({ data });
 }
 
 export async function POST(req: Request) {
@@ -25,22 +23,23 @@ export async function POST(req: Request) {
 
   const payload = {
     id: body.id,
-    name: String(body.name ?? '').trim(),
-    address: body.address ?? null,
+    site_id: body.siteId ?? null,
+    entry_date: body.entryDate,
+    description: String(body.description ?? '').trim(),
+    amount: Number(body.amount ?? 0),
     deleted: !!body.deleted
   };
 
-  if (!payload.id || !payload.name) {
-    return Response.json({ error: 'Missing id/name' }, { status: 400 });
+  if (!payload.id || !payload.entry_date || !payload.description) {
+    return Response.json({ error: 'Missing id/entryDate/description' }, { status: 400 });
   }
 
   const { data, error } = await supabaseAdmin
-    .from('sites')
+    .from('income_entries')
     .upsert(payload, { onConflict: 'id' })
-    .select('id,name,address,updated_at,deleted')
+    .select('id,site_id,entry_date,description,amount,updated_at,deleted')
     .single();
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
-
-  return NextResponse.json({ data });
+  return Response.json({ data });
 }

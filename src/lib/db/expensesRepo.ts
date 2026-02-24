@@ -1,13 +1,13 @@
 import { db } from './appDb';
-import { SiteRow } from '@lib/db/db.types';
+import type { ExpenseRow } from './db.types';
 
-export async function upsertSiteLocal(row: Omit<SiteRow, 'deleted'>) {
-  const full: SiteRow = { ...row, deleted: 0 };
+export async function upsertExpenseLocal(row: Omit<ExpenseRow, 'deleted'>) {
+  const full: ExpenseRow = { ...row, deleted: 0 };
 
-  await db.transaction('rw', db.sites, db.outbox, async () => {
-    await db.sites.put(full);
+  await db.transaction('rw', db.expenses, db.outbox, async () => {
+    await db.expenses.put(full);
 
-    const key = `sites:${full.id}`;
+    const key = `expenses:${full.id}`;
     const existing = await db.outbox.where('key').equals(key).first();
 
     if (existing) {
@@ -19,7 +19,7 @@ export async function upsertSiteLocal(row: Omit<SiteRow, 'deleted'>) {
     } else {
       await db.outbox.add({
         key,
-        entity: 'sites',
+        entity: 'expenses',
         op: 'upsert',
         rowId: full.id,
         payload: full,
@@ -30,35 +30,32 @@ export async function upsertSiteLocal(row: Omit<SiteRow, 'deleted'>) {
   });
 }
 
-export async function deleteSiteLocal(id: string) {
-  const existing = await db.sites.get(id);
+export async function deleteExpenseLocal(id: string) {
+  const existing = await db.expenses.get(id);
   if (!existing) return;
 
-  const updated: SiteRow = {
-    ...existing,
-    deleted: 1,
-    updatedAt: new Date().toISOString()
-  };
+  const updated: ExpenseRow = { ...existing, deleted: 1, updatedAt: new Date().toISOString() };
 
-  await db.transaction('rw', db.sites, db.outbox, async () => {
-    await db.sites.put(updated);
+  await db.transaction('rw', db.expenses, db.outbox, async () => {
+    await db.expenses.put(updated);
 
-    const key = `sites:${id}`;
+    const key = `expenses:${id}`;
     const existingOutbox = await db.outbox.where('key').equals(key).first();
 
+    const payload = { id, updatedAt: updated.updatedAt };
     if (existingOutbox) {
       await db.outbox.update(existingOutbox.id!, {
         op: 'delete',
-        payload: { id, updatedAt: updated.updatedAt },
+        payload,
         createdAt: new Date().toISOString()
       });
     } else {
       await db.outbox.add({
         key,
-        entity: 'sites',
+        entity: 'expenses',
         op: 'delete',
         rowId: id,
-        payload: { id, updatedAt: updated.updatedAt },
+        payload,
         createdAt: new Date().toISOString(),
         attempts: 0
       });

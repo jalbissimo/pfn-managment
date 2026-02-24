@@ -3,12 +3,13 @@ import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
+import { formatDate } from '@utils/date';
 
 type Value = number | string | boolean;
 
 type ThorTableEditFieldProps = ComponentType & {
   columnDef: {
-    custom?: 'text' | 'checkbox' | 'select';
+    custom?: 'text' | 'checkbox' | 'select' | 'date';
     lookup?: { [key: string]: string };
     autoFocus?: boolean;
   };
@@ -31,6 +32,23 @@ export default function ThorTableEditField(props: ThorTableEditFieldProps) {
             onChange={(_, checked) => props.onChange(checked)}
           />
         </Box>
+      );
+    }
+
+    case 'date': {
+      return (
+        <TextField
+          autoFocus={autoFocus}
+          fullWidth
+          type="date"
+          value={formatDate(props.value as string)}
+          onChange={(e) => props.onChange(e.target.value)}
+          error={props.error}
+          helperText={props.helperText}
+          slotProps={{
+            inputLabel: { shrink: true }
+          }}
+        />
       );
     }
     case 'select': {

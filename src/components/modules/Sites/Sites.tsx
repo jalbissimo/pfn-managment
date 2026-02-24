@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Box } from '@mui/material';
 import SitesTable from '@components/modules/Sites/SitesTable';
 import { useSites } from '@hooks/db/sites/useSites';
-import type { SiteRow } from '@lib/db/appDb';
 
 import { deleteSiteLocal, upsertSiteLocal } from '@lib/db/sitesRepo';
 import { syncSites } from '@lib/sync/sitesSync';
@@ -12,6 +11,7 @@ import ActionHeader from '@components/core/ActionHeader';
 import SyncIcon from '@mui/icons-material/Sync';
 import AddIcon from '@mui/icons-material/Add';
 import { triggerMaterialTableAddRow } from '@components/core/ThorTable';
+import { SiteRow } from '@lib/db/db.types';
 
 export default function Sites() {
   const { data: sites = [], isLoading } = useSites() ?? {};
@@ -38,7 +38,7 @@ export default function Sites() {
           name: (newData.name ?? '').trim(),
           address: (newData.address ?? '').toString().trim() || null,
           updatedAt: new Date().toISOString()
-        });
+        } as SiteRow);
 
         await syncSites().catch(() => {});
       },
@@ -51,7 +51,7 @@ export default function Sites() {
           name: (newData.name ?? '').trim(),
           address: (newData.address ?? '').toString().trim() || null,
           updatedAt: new Date().toISOString()
-        });
+        } as SiteRow);
 
         await syncSites().catch(() => {});
       },
@@ -81,7 +81,12 @@ export default function Sites() {
   return (
     <Box sx={{ p: 2 }}>
       <ActionHeader title="Șantiere" actions={headerActions} />
-      <SitesTable sites={sites} editable={editable} isLoading={isLoading} tableRef={tableRef} />
+      <SitesTable
+        sites={sites}
+        editable={editable as any}
+        isLoading={isLoading}
+        tableRef={tableRef}
+      />
     </Box>
   );
 }

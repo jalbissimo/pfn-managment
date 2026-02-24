@@ -4,7 +4,7 @@ import React from 'react';
 import ThorTable from '@components/core/ThorTable/ThorTable';
 import { defaultOptions, required } from '@components/core/ThorTable';
 import { formatDateTime } from '@utils/date';
-import { SiteRow } from '@lib/db/appDb';
+import { SiteRow } from '@lib/db/db.types';
 
 const columns = [
   {

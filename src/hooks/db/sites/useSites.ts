@@ -1,15 +1,15 @@
+'use client';
+
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '@lib/db/appDb';
+import { db } from '@/lib/db/appDb';
 
 export function useSites() {
-  const data = useLiveQuery(
-    async () => {
-      const all = await db.sites.toArray();
-      return all.filter((x) => !x.deleted);
-    },
-    [],
-    undefined
-  );
+  const data = useLiveQuery(async () => {
+    return db.sites.where('deleted').equals(0).toArray();
+  }, []);
 
-  return { data: data ?? [], isLoading: data === undefined };
+  return {
+    data,
+    isLoading: data === undefined
+  };
 }

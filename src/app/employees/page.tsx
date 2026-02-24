@@ -1,8 +1,5 @@
-export default function Employees() {
-  return (
-    <div>
-      <h1>Personnel</h1>
-      <p>Welcome to the PFN Fixture Design Admin Tool Employees page!</p>
-    </div>
-  );
+import Employees from '@components/modules/Employees/Employees';
+
+export default function EmployeesPage() {
+  return <Employees />;
 }
